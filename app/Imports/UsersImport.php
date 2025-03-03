@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\house;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
 
@@ -24,10 +25,25 @@ class UsersImport implements ToModel
             return null; // تجاهل السطر الأول
         }
 
-        return new User([
-            'name'     => $row[0],
-            'email'    => $row[1],
+        // return new User([
+        //     'name'     => $row[0],
+        //     'email'    => $row[1],
+        //     'password' => $row[2],
+        // ]);
+
+        $user = User::create([
+            'name' => $row[0],
+            'email' => $row[1],
             'password' => $row[2],
         ]);
+
+        // إنشاء النشاط المرتبط بالمستخدم
+        house::create([
+            'user_id' => $user->id,
+            'name' => $row[3],
+            'number' => $row[4],
+        ]);
+
+        return $user;
     }
 }
